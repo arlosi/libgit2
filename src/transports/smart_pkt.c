@@ -354,6 +354,8 @@ static int unpack_pkt(git_pkt **out, const char *line, size_t len)
 	GIT_ERROR_CHECK_ALLOC(pkt);
 	pkt->type = GIT_PKT_UNPACK;
 
+	fprintf(stderr, "unpack_pkt: %.*s\n", len, line);
+
 	if (!git__prefixncmp(line, len, "unpack ok"))
 		pkt->unpack_ok = 1;
 	else
@@ -468,6 +470,10 @@ int git_pkt_parse_line(
 	}
 
 	len -= PKT_LEN_SIZE; /* the encoded length includes its own size */
+
+	if (*line > GIT_SIDE_BAND_ERROR) {
+		fprintf(stderr, "git_pkt_parse_line: %.*s___\n", len, line);
+	}
 
 	if (*line == GIT_SIDE_BAND_DATA)
 		error = data_pkt(pkt, line, len);
